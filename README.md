@@ -1,8 +1,8 @@
 # surrogate_modelling_v2
 
-# the code base here is based on the code written by Monica Dasi.
+The code base here is based on the code written by Monica Dasi.
 
-# https://github.com/monicadasi/surrogate_modelling
+https://github.com/monicadasi/surrogate_modelling
 
 Master's Thesis Code 
 
