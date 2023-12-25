@@ -15,6 +15,7 @@ from plot_prediction import PlotPrediction
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from helper.singleton import Singleton
 
 # import random
 # random.seed(100)
@@ -28,7 +29,7 @@ REF_MODEL_SCORE = 0.95
 
 log = logging.getLogger(__name__)
 
-class DataModeling:
+class DataModeling(metaclass=Singleton):
     
     def __init__(self) -> None:
         self.res_freqs = []
@@ -173,7 +174,7 @@ class DataModeling:
         self.final_df = self.final_df.sort_values(
             ['Lambda', 'Frequency'], ascending=[True, True])
         self.final_df.reset_index(drop=True, inplace=True)
-        df_name = os.path.join(PathUtils.get_results_directory, 'final_df.csv')
+        df_name = os.path.join(PathUtils().get_results_directory(), 'final_df.csv')
         self.final_df.to_csv(os.path.realpath(df_name))
         # Plot the True and Predicted Magnitude values w.r.t frequency as function of lambda
         PlotPrediction(self.final_df)
@@ -244,7 +245,7 @@ class DataModeling:
         self.final_df = self.final_df.sort_values(
             ['Lambda', 'Frequency'], ascending=[True, True])
         self.final_df.reset_index(drop=True, inplace=True)
-        df_name = os.path.join(PathUtils.get_results_directory, 'final_df.csv')
+        df_name = os.path.join(PathUtils().get_results_directory(), 'final_df.csv')
         self.final_df.to_csv(os.path.realpath(df_name))
         # Plot the True value and Predicted Magnitude values w.r.t frequency as function of lambda
         PlotPrediction(self.final_df)

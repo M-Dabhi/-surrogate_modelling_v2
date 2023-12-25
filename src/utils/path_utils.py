@@ -1,19 +1,21 @@
 import os
 import json
+from helper.singleton import Singleton
 
-class PathUtils:
+class PathUtils(metaclass=Singleton):
     def __init__(self) -> None:
         pass
 
     def get_current_directory(self) -> str:
-        self.directory_path = os.getcwd()
+        self.directory_path = os.path.dirname(os.getcwd())  # Here we are getting main directory i.e., surrogate_modelling_v2 as in current working directory
+        return self.directory_path
         
     def get_data_directory(self) -> str:
         data_directory = os.path.join(self.get_current_directory(), 'data')
         return data_directory
 
     def get_rawdata_directory(self) -> str:
-        raw_data_directory = os.path.join(self.get_data_directory, 'raw')
+        raw_data_directory = os.path.join(self.get_data_directory(), 'raw')
         return raw_data_directory
     
     def get_results_directory(self) -> str:
@@ -61,9 +63,9 @@ class PathUtils:
             pass
         return model_directory
     
-    def create_freq_dir(self, frq_name)->str:
+    def create_freq_dir(self, frq_name) -> str :
         _fq_dir = f'frq_{frq_name}'
-        _model_dir = os.path.join(self.get_circle_plots_directory, _fq_dir)
+        _model_dir = os.path.join(self.get_circle_plots_directory(), _fq_dir)
         try:
             os.makedirs(_model_dir)
         except FileExistsError:
@@ -71,40 +73,34 @@ class PathUtils:
             pass
         return _model_dir
     
-    def _read_config(self):
-        with open('config.json', 'r') as f:
-            config = json.load(f)
-            return config
+    def get_ellipse_plots_directory(self) -> str:
+        ellipse_plot_directory = os.path.join(self.get_plots_directory(), 'ellipse_plots')
+        try:
+            os.makedirs(ellipse_plot_directory)
+        except FileExistsError:
+            # plots directory already exists
+            pass
+        return ellipse_plot_directory
+    
+    def get_spline_plots_directory(self, frq_name) -> str:
+        _fq_dir = f'frq_{frq_name}'
+        spline_plot_directory = os.path.join(self.get_plots_directory(), 'spline_plots', _fq_dir)
+        try:
+            os.makedirs(spline_plot_directory)
+        except FileExistsError:
+            # plots directory already exists
+            pass
+        return spline_plot_directory
+    
+    def create_freq_dir_for_plots(self, freq) -> str : 
+        freq = f'frq_{freq}'
+        freq_plot_dir = os.path.join(self.get_plots_directory(), freq)
+        try: 
+            os.makedirs(freq_plot_dir)
+        except FileExistsError:
+            # model directory already exists
+            pass
+        return freq_plot_dir
         
-    """
-    ref: https://stackoverflow.com/questions/21035762/python-read-json-file-and-modify
-    Parameter
-    ---------
-    key : str
-        Key value in the json config
-    val : str
-        Corresponding value of the key in json config
-    """
-
-    def _write_to_config(self, key: str, val: str):
-        with open('config.json', 'r+') as _file:
-            _cfg = json.load(_file)
-            _cfg[key] = val  # add the value to config
-            _file.seek(0)  # reset the file position to the beginning
-            json.dump(_cfg, _file, indent=4)
-            _file.truncate()  # remove the remaining part
-        
-        
-    def _draw_plots(self) -> bool:
-        _config = self._read_config()
-        if _config['draw_plots'] == "True":
-            return True
-        else:
-            return False
-
-    def _parse_data(self) -> bool:
-        _config = self._read_config()
-        if _config['parse_data'] == "True":
-            return True
-        else:
-            return False
+    def get_config_file(self) -> str :
+        return os.path.join(os.getcwd(), 'config.json')

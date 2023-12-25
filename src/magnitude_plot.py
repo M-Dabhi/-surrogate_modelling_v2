@@ -56,4 +56,4 @@ class MagnitudePlot:
         fig.update_traces(line=dict(width=1))
 
         fig.write_html(plt_name)
-        fig.write_image(os.path.realpath(os.path.join(self._res_path, 'predicted_freq_plot.svg'), scale=2))
+        fig.write_image(os.path.realpath(os.path.join(self._res_path, 'predicted_freq_plot.svg')), scale=2)

@@ -8,6 +8,10 @@ from helper.base_logger import BaseLogger
 from data_parser import DataParser
 from data_visualizer import DataVisualizer
 from least_squares_circle import LeastSquaresCircle
+from least_squares_ellipse import LeastSquaresEllipse
+from quadratic_spline import QuadraticSpline
+from cubic_spline import CubicSpline
+from quartic_spline import QuarticSpline
 
 from data_modeling import DataModeling
 from magnitude_plot import MagnitudePlot
@@ -22,7 +26,11 @@ def main(log_level: str, draw_plot: str):
 
     parse_freq_data()  # parse the freqency data.. create dataframe..
     visualize_data()
-    create_model_predict()
+    #create_model_predict()
+    #least_squares_ellipse()
+    #quadratic_spline()
+    cubic_spline()
+    #quartic_spline()
     
 def parse_freq_data():
     dataparser = DataParser()
@@ -41,6 +49,7 @@ def parse_freq_data():
         
 def visualize_data():
     # draw the plot only the config value to draw is TRUE
+    #DataVisualizer().get_polar_plot_fig_wrt_freq()
     if Configs()._draw_plots() == True:
         _dv = DataVisualizer()
         _dv.plot_frf_data()
@@ -64,6 +73,22 @@ def create_model_predict():
     # if Configs()._draw_plots() == 'True':
     #     _final_df = _dm.get_final_df()
     #     MagnitudePlot(_final_df)
+    
+def least_squares_ellipse():
+    _lse = LeastSquaresEllipse()
+    _lse.process_ellipse_extraction()
+    
+def quadratic_spline():
+    _qs = QuadraticSpline()
+    _qs.process_spline_extraction()
+    
+def cubic_spline():
+    _cs = CubicSpline()
+    _cs.process_spline_extraction()
+    
+def quartic_spline():
+    _cs = QuarticSpline()
+    _cs.process_spline_extraction()
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

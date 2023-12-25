@@ -45,7 +45,7 @@ class LeastSquaresCircle:
         self._df_list = []
         self._plot = Configs()._draw_plots()
         log.info(f"Draw Plots : {self._plot}")
-        plotly.io.orca.config.executable = os.path.realpath(os.path.join(PathUtils().get_current_directory, 'orca_app', 'orca.exe')) # r'C:\ProgramData\miniconda3\orca_app\orca.exe'
+        plotly.io.orca.config.executable = os.path.realpath(os.path.join(PathUtils().get_current_directory(), 'orca_app', 'orca.exe')) # r'C:\ProgramData\miniconda3\orca_app\orca.exe'
         plotly.io.orca.config.save()
         self._neigh = 10
         self._step = 4
@@ -92,6 +92,14 @@ class LeastSquaresCircle:
     def calc_R(self, xc, yc):
         """ calculate the distance of each 2D points from the center (xc, yc) """
         return sqrt((self.x-xc)**2 + (self.y-yc)**2)
+    
+    def f_2(self, c):
+        """ 
+        calculate the algebraic distance between the data points 
+        and the mean circle centered at c=(xc, yc) 
+        """
+        Ri = self.calc_R(*c)
+        return Ri - Ri.mean()
     
     """
     Computes given x and y points and approximates the best possible
@@ -521,7 +529,7 @@ class LeastSquaresCircle:
                               yaxis=dict(
                                   range=[0.3, 1.0],
                                   tickmode='linear',
-                                  dtick=0.1),
+                                  dtick=0.005),
                               template=large_rockwell_template,
                               width=1000, height=600,
                               showlegend=True)
@@ -530,9 +538,10 @@ class LeastSquaresCircle:
             fig.update_xaxes(gridcolor='black', griddash='dot')
             fig.update_yaxes(gridcolor='black', griddash='dot')
 
-            plt_ht = os.path.join(self._plt_dir, f'Radius_Vs_Lambda_{frq}.html') # '{0}/' + f'Radius_Vs_Lambda_{frq}.html'
+            frq_dir = PathUtils().create_freq_dir_for_plots(frq)
+            plt_ht = os.path.join(frq_dir, f'Radius_Vs_Lambda_{frq}.html') # '{0}/' + f'Radius_Vs_Lambda_{frq}.html'
             fig.write_html(os.path.realpath(plt_ht))
-            plt = os.path.join(self._plt_dir, f'Radius_Vs_Lambda_{frq}.png') # '{0}/' + f'Radius_Vs_Lambda_{frq}.png'
+            plt = os.path.join(frq_dir, f'Radius_Vs_Lambda_{frq}.png') # '{0}/' + f'Radius_Vs_Lambda_{frq}.png'
             f_name = os.path.realpath(plt)
             # fig.write_html(f_name)
             fig.write_image(f_name, engine="orca",
@@ -541,13 +550,21 @@ class LeastSquaresCircle:
             # -----------------------------------------------------------------------------
             # Set figure1 size
             fig1.update_layout(title=f'Phase vs Lambda (Frequency = {frq})',
+                                xaxis=dict(
+                                  range=[7, 11],
+                                  tickmode='linear',
+                                  dtick=0.5),
+                                yaxis=dict(
+                                  range=[0.3, 1.0],
+                                  tickmode='linear',
+                                  dtick=0.005),
                                template=large_rockwell_template,
                                showlegend=True)
             fig1.update_xaxes(gridcolor='black', griddash='dot')
             fig1.update_yaxes(gridcolor='black', griddash='dot')
-            plt1_ht = os.path.join(self._plt_dir, f'Phase_Vs_Lambda_{frq}.html') # '{0}/' + f'Phase_Vs_Lambda_{frq}.html'
+            plt1_ht = os.path.join(frq_dir, f'Phase_Vs_Lambda_{frq}.html') # '{0}/' + f'Phase_Vs_Lambda_{frq}.html'
             fig1.write_html(os.path.realpath(plt1_ht))
-            plt1 = os.path.join(self._plt_dir, f'Phase_Vs_Lambda_{frq}.png') # '{0}/' + f'Phase_Vs_Lambda_{frq}.png'
+            plt1 = os.path.join(frq_dir, f'Phase_Vs_Lambda_{frq}.png') # '{0}/' + f'Phase_Vs_Lambda_{frq}.png'
             # fig1.write_html(os.path.realpath(plt1.format(self._plt_dir)))
             f1_name = os.path.realpath(plt1)
             fig1.write_image(f1_name, engine="orca",
@@ -559,18 +576,18 @@ class LeastSquaresCircle:
                                xaxis=dict(
                                    range=[7, 11],
                                    tickmode='linear',
-                                   dtick=1.0),
+                                   dtick=0.5),
                                yaxis=dict(
                                    range=[0.3, 0.6],
                                    tickmode='linear',
-                                   dtick=0.1),
+                                   dtick=0.005),
                                template=large_rockwell_template,
                                showlegend=True)
             fig2.update_xaxes(gridcolor='black', griddash='dot')
             fig2.update_yaxes(gridcolor='black', griddash='dot')
-            plt2_ht = os.path.join(self._plt_dir, f'X-Coord_Vs_Lambda_{frq}.html') # '{0}/' + f'X-Coord_Vs_Lambda_{frq}.html'
+            plt2_ht = os.path.join(frq_dir, f'X-Coord_Vs_Lambda_{frq}.html') # '{0}/' + f'X-Coord_Vs_Lambda_{frq}.html'
             fig2.write_html(os.path.realpath(plt2_ht))
-            plt2 = os.path.join(self._plt_dir, f'X-Coord_Vs_Lambda_{frq}.png') # '{0}/' + f'X-Coord_Vs_Lambda_{frq}.png'
+            plt2 = os.path.join(frq_dir, f'X-Coord_Vs_Lambda_{frq}.png') # '{0}/' + f'X-Coord_Vs_Lambda_{frq}.png'
             f2_name = os.path.realpath(plt2)
             fig2.write_image(f2_name, engine="orca",
                              format="png", width=800, height=400, scale=2)
@@ -581,18 +598,18 @@ class LeastSquaresCircle:
                                xaxis=dict(
                                    range=[7, 11],
                                    tickmode='linear',
-                                   dtick=1.0),
+                                   dtick=0.5),
                                yaxis=dict(
                                    range=[-0.4, -0.1],
                                    tickmode='linear',
-                                   dtick=0.1),
+                                   dtick=0.005),
                                template=large_rockwell_template,
                                showlegend=True)
             fig3.update_xaxes(gridcolor='black', griddash='dot')
             fig3.update_yaxes(gridcolor='black', griddash='dot')
-            plt3_ht = os.path.join(self._plt_dir, f'Y-Coord_Vs_Lambda_{frq}.html') # '{0}/' + f'Y-Coord_Vs_Lambda_{frq}.html'
+            plt3_ht = os.path.join(frq_dir, f'Y-Coord_Vs_Lambda_{frq}.html') # '{0}/' + f'Y-Coord_Vs_Lambda_{frq}.html'
             fig3.write_html(os.path.realpath(plt3_ht))
-            plt3 = os.path.join(self._plt_dir, f'Y-Coord_Vs_Lambda_{frq}.png') # '{0}/' + f'Y-Coord_Vs_Lambda_{frq}.png'
+            plt3 = os.path.join(frq_dir, f'Y-Coord_Vs_Lambda_{frq}.png') # '{0}/' + f'Y-Coord_Vs_Lambda_{frq}.png'
             f3_name = os.path.realpath(plt3)
             fig3.write_image(f3_name, engine="orca", 
                              format="png", width=800, height=400, scale=2)
@@ -675,7 +692,7 @@ class LeastSquaresCircle:
         # frq_list = df_elements['Frequency'].to_list()
 
         frq_list = frf_df6['Frequency'].to_list()
-        _frqs = list(dict.fromkeys(frq_list))  # remove the duplicate freq.
+        #_frqs = list(dict.fromkeys(frq_list))  # remove the duplicate freq.
 
         #log.info(frq_list)
         # log.info(f'Frequency List Size : {len(_frqs)}')
@@ -686,7 +703,7 @@ class LeastSquaresCircle:
         #         34.459999084473]
         # _frqs = [34.200000762939, 34.209999084473]
         # _frqs = [34.310001373291]
-        # _frqs = [25.0]
+        _frqs = [25.0]
         #_frqs = [25.040000915527]
         log.info(f'Frequency List Size : {len(_frqs)}')
 

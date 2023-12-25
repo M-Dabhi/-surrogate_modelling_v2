@@ -3,6 +3,7 @@ import natsort
 import pandas as pd
 import numpy as np
 from utils.path_utils import PathUtils
+from helper.singleton import Singleton
 import logging
 
 
@@ -17,7 +18,7 @@ lambda_val = []
 log = logging.getLogger(__name__)
 
 
-class DataParser():
+class DataParser(metaclass=Singleton):
     
     # Split the data into small chunks based on a literal '#Parameters' as split criteria
     # log.info("File Path : ", fsplit_path)
@@ -37,6 +38,8 @@ class DataParser():
                     # log.info(title)
                     if f_out:
                         f_out.close()
+                    if not os.path.exists(fsplit_path): 
+                        os.makedirs(fsplit_path)
                     split_file = os.path.join(fsplit_path, f'{title}.txt')
                     f_out = open(os.path.realpath(split_file), 'w')
                 if f_out:
@@ -61,6 +64,8 @@ class DataParser():
                 with open(os.path.realpath(split_file_path), 'r') as fin:
                     data = fin.read().splitlines(True)
                     
+                if not os.path.exists(fout_path):
+                    os.makedirs(fout_path)
                 out_file = os.path.join(fout_path, f'file{id}_out.txt')
                 with open(os.path.realpath(out_file), 'w') as fout:
                     fout.writelines(data[3:])  # drop the first 3 lines of text inside the file

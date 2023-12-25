@@ -23,7 +23,7 @@ class BaseLogger:
         root.addHandler(console_handler)
 
         # set log file path
-        log_directory = PathUtils.get_log_directory()
+        log_directory = PathUtils().get_log_directory()
         file_name = f'{time.strftime("%Y%m%d_%H%M%S")}_log.txt'
         file_path = os.path.join(log_directory, file_name)
         

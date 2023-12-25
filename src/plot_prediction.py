@@ -72,5 +72,5 @@ class PlotPrediction:
         fig.update_traces(line=dict(width=1))
         
         # save plots
-        fig.write_html(os.path.realpath(os.path.join(PathUtils.get_results_directory, 'true_pred_MagnitudePlot.html')))
-        fig.write_image(os.path.realpath(os.path.join(PathUtils.get_results_directory, 'true_pred_MagnitudePlot.svg')))
+        fig.write_html(os.path.realpath(os.path.join(PathUtils().get_results_directory(), 'true_pred_MagnitudePlot.html')))
+        fig.write_image(os.path.realpath(os.path.join(PathUtils().get_results_directory(), 'true_pred_MagnitudePlot.svg')))
